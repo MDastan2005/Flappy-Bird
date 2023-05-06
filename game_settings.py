@@ -1,12 +1,16 @@
 from pathlib import Path
 
 class GameSettings:
+    """
+    Game constants and variables
+    """
+
     SCREEN_WIDTH = 288
     SCREEN_HEIGHT = 512
     
-    gravity = 50
+    GRAVITY = 1000
     game_speed = 50
-    bird_flop_force = 300
+    BIRD_FLAP_FORCE = 250
 
-    sprites_path = Path("assets/sprites")
+    SPRITES_PATH = Path("assets/sprites")
     
