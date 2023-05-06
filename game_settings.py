@@ -13,4 +13,5 @@ class GameSettings:
     BIRD_FLAP_FORCE = 250
 
     SPRITES_PATH = Path("assets/sprites")
+    AUDIO_PATH = Path("assets/audio")
     

@@ -22,6 +22,7 @@ class Game:
         pygame.init()
 
         self.load_images()
+        self.load_sounds()
 
         self.screen = pygame.display.set_mode((GameSettings.SCREEN_WIDTH, GameSettings.SCREEN_HEIGHT))
         pygame.display.set_caption("Flappy Bird")
@@ -80,6 +81,7 @@ class Game:
             self.start_game()
         if keys[pygame.K_SPACE] and self._space_hold == False and self.game_state == self.GameState.run:
             self._space_hold = True
+            self.sound_wing.play()
             self.bird.flap()
         elif not keys[pygame.K_SPACE] and self.game_state not in {self.GameState.end, self.GameState.die}:
             self._space_hold = False
@@ -172,7 +174,9 @@ class Game:
         return result
 
     def load_images(self) -> None:
-        # Load images from sprites folder
+        """
+        Load images from sprites folder
+        """
         from pygame.image import load
         
         sprites_path = GameSettings.SPRITES_PATH
@@ -190,6 +194,19 @@ class Game:
 
         self.image_digits = [load(Path.joinpath(sprites_path, f"{i}.png"))
                              for i in range(10)]
+    
+    def load_sounds(self) -> None:
+        """
+        Load sounds from audio folder
+        """
+        from pygame.mixer import Sound
+
+        audio_path = GameSettings.AUDIO_PATH
+
+        self.sound_die = Sound(Path.joinpath(audio_path, "die.wav"))
+        self.sound_hit = Sound(Path.joinpath(audio_path, "hit.wav"))
+        self.sound_point = Sound(Path.joinpath(audio_path, "point.wav"))
+        self.sound_wing = Sound(Path.joinpath(audio_path, "wing.wav"))
     
     def add_pipe(self) -> None:
         if len(self.pipes) == 0:
@@ -209,6 +226,7 @@ class Game:
         if self.bird.get_center() >= self.get_next_pipe().get_center():
             self._next_pipe += 1
             self.score += 1
+            self.sound_point.play()
 
     def check_collision(self) -> bool:
         pipe = self.get_next_pipe()
@@ -230,6 +248,8 @@ class Game:
         self.add_pipe()
     
     def losed(self) -> None:
+        self.sound_hit.play()
+        self.sound_die.play()
         GameSettings.game_speed = 0
         self.game_state = self.GameState.die
         self.record_of_session = max(self.record_of_session, self.score)
